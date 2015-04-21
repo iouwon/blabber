@@ -21,7 +21,7 @@ public class TimelineTest {
     }
 
     @Test
-    public void testAddingPostAppendsToANewTimeline() {
+    public void addingPostAppendsToANewTimeline() {
         Post newPost = new Post(new User("user"), "message", posted);
         Post expectedPost = new Post(new User("user"), "message", posted);
 
@@ -33,7 +33,7 @@ public class TimelineTest {
     }
 
     @Test
-    public void testAddingMultiplePostsAppendsToANewTimeline() {
+    public void addingMultiplePostsAppendsToANewTimeline() {
         String username1 = "user1";
         String username2 = "user2";
         Post newPost1 = new Post(new User(username1), "message1", posted);
@@ -47,5 +47,21 @@ public class TimelineTest {
         assertThat(timeline.length(), equalTo(0));
         assertThat(newTimeline.length(), equalTo(2));
         newTimeline.forEach((post) -> assertThat(post, equalTo(expectedPosts.get(post.user.name))));
+    }
+
+    @Test
+    public void forEachIteratesOverEachPostInTheTimeline() {
+        String username1 = "user1";
+        String username2 = "user2";
+        Post newPost1 = new Post(new User(username1), "message1", posted);
+        Post newPost2 = new Post(new User(username2), "message2", posted);
+
+        Timeline newTimeline = timeline.append(newPost1).append(newPost2);
+
+        StringBuilder usernamesConcatenatedBuilder = new StringBuilder();
+
+        newTimeline.forEach((post) -> usernamesConcatenatedBuilder.append(post.user.name));
+
+        assertThat(usernamesConcatenatedBuilder.toString(), equalTo(username1 + username2));
     }
 }
