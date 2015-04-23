@@ -15,6 +15,10 @@ public class Post {
         this.timestamp = timestamp;
     }
 
+    public static Post from(User user, String msg) {
+        return new Post(user, msg, LocalDateTime.now());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -1,10 +1,12 @@
 package org.sydenham.blabber.domain;
 
+import org.sydenham.blabber.exception.ApplicationException;
+
 import java.util.LinkedList;
 import java.util.function.Consumer;
 
 @SuppressWarnings("unchecked")
-public class Timeline {
+public class Timeline implements Cloneable {
 
     private final LinkedList<Post> posts;
 
@@ -28,5 +30,13 @@ public class Timeline {
 
     public Integer length() {
         return posts.size();
+    }
+
+    public Object clone() {
+        try {
+            return super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new ApplicationException(e);
+        }
     }
 }
