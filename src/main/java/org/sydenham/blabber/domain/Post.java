@@ -19,6 +19,10 @@ public class Post {
         return new Post(user, msg, LocalDateTime.now());
     }
 
+    public Boolean wasPostedBefore(Post that) {
+        return this.timestamp.isBefore(that.timestamp);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

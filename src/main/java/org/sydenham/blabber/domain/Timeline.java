@@ -3,7 +3,7 @@ package org.sydenham.blabber.domain;
 import org.sydenham.blabber.exception.ApplicationException;
 
 import java.util.LinkedList;
-import java.util.function.Consumer;
+import java.util.Objects;
 
 @SuppressWarnings("unchecked")
 public class Timeline implements Cloneable {
@@ -24,8 +24,8 @@ public class Timeline implements Cloneable {
         return new Timeline(newPosts);
     }
 
-    public void forEach(Consumer<Post> action) {
-        posts.forEach(action);
+    public LinkedList<Post> posts() {
+        return (LinkedList<Post>) posts.clone();
     }
 
     public Integer length() {
@@ -38,5 +38,18 @@ public class Timeline implements Cloneable {
         } catch (CloneNotSupportedException e) {
             throw new ApplicationException(e);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Timeline timeline = (Timeline) o;
+        return Objects.equals(posts, timeline.posts);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(posts);
     }
 }

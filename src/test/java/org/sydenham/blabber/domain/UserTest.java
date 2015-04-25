@@ -2,11 +2,9 @@ package org.sydenham.blabber.domain;
 
 import org.testng.annotations.Test;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.stream.Stream;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class UserTest {
@@ -17,15 +15,21 @@ public class UserTest {
 
     @Test
     public void userPostsMessageIsRecordedInTimeline() {
-        User updatedUser = user.postMessage(MSG);
+        User updatedTimelineUser = user.postMessage(MSG);
 
+        assertThat(user, not(equalTo(updatedTimelineUser)));
         assertThat(user.timeline.length(), equalTo(0));
-        assertThat(updatedUser.timeline.length(), equalTo(1));
+        assertThat(updatedTimelineUser.timeline.length(), equalTo(1));
 
-        List<Post> posts = new LinkedList<>();
+        Stream<Post> postStream = updatedTimelineUser.timeline.posts().stream();
 
-        updatedUser.timeline.forEach(posts::add);
+        assertThat(postStream.anyMatch((post) -> post.user.name.equals(NAME) && post.message.equals(MSG)), is(true));
+    }
 
-        assertThat(posts.stream().anyMatch((post) -> post.user.name.equals(NAME) && post.message.equals(MSG)), is(true));
+    @Test
+    public void usersAreEqual() {
+        User otherUser = new User(NAME);
+
+        assertThat(user, equalTo(otherUser));
     }
 }
