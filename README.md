@@ -11,3 +11,5 @@ A quicker alternative for retrieving the messages would be for the wall to merge
 Given the possible volumes involved and the need to keep processing and messaging to a minimum I think keeping one copy of the timeline data and merging on request would be best and would be made performant in high volume scenarios by simply timeslicing the timelines and merging only the data returned in the time slices, as well as filtering followers out or adding them in (black vs white list) to the results, as users could only practically consume a small number of posts.
 
 Wanted to do a recursive console but due to a lack of tail recursion in java didn't feel this was a good idea but I use a null return value from the main command loop to signify an exit and return a version of the immutable service object when processing the regular commands.
+
+I haven't paid any attention to timezones here and have assumed the default timezone of the system is suitable.
