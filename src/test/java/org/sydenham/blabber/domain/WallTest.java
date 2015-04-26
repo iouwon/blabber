@@ -11,14 +11,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class WallTest {
 
-    public static final String USERNAME1 = "dave";
-    public static final String USERNAME2 = "fiona";
-    public static final String USERNAME3 = "bruce";
-    public static final String MSG1 = "msg1";
-    public static final String MSG2 = "msg2";
-    public static final String MSG3 = "msg3";
-    public static final String MSG4 = "msg4";
-    public static final String MSG5 = "msg5";
+    private static final String USERNAME1 = "dave";
+    private static final String USERNAME2 = "fiona";
+    private static final String USERNAME3 = "bruce";
+    private static final String MSG1 = "msg1";
+    private static final String MSG2 = "msg2";
+    private static final String MSG3 = "msg3";
+    private static final String MSG4 = "msg4";
+    private static final String MSG5 = "msg5";
+
     private final Wall wall = new Wall();
 
     @Test

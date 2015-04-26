@@ -9,8 +9,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class PostTest {
 
-    public static final String NAME = "dave";
-    public static final String MSG = "msg";
+    private static final String NAME = "dave";
+    private static final String MSG = "msg";
 
     @Test
     public void fromReturnsNewPostWithParametersAndCurrentTimestamp() {

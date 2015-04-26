@@ -48,7 +48,7 @@ public class Wall implements Cloneable {
     private List<Post> amalgamatedPosts() {
         LinkedList<Post> amalgamatedPosts = new LinkedList<>();
         LinkedList<LinkedList<Post>> timelines = new LinkedList<>();
-        following.forEach((user) -> timelines.add(user.timeline.posts()));
+        following.forEach(user -> timelines.add(user.timeline.posts()));
         while (timelines.size() > 0) {
             Stream<LinkedList<Post>> timelinesStream = timelines.stream();
             LinkedList<Post> timelineWithEarliestPost = timelineWithEarliestPostIn(timelinesStream);

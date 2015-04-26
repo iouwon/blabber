@@ -35,7 +35,7 @@ public class UserCommandOrchestrator {
 
     public void forEachTimelinePostOf(String username, Consumer<Post> action) {
         User user = User.from(username);
-        processUsersMessages(user, (theUser) -> theUser.timeline.posts(), action);
+        processUsersMessages(user, theUser -> theUser.timeline.posts(), action);
     }
 
     @SuppressWarnings("unchecked")

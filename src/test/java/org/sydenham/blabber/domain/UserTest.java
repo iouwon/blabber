@@ -13,9 +13,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class UserTest {
 
-    public static final String MSG = "howdy";
-    public static final String DAVE = "dave";
-    public static final String JANINE = "janine";
+    private static final String MSG = "howdy";
+    private static final String DAVE = "dave";
+    private static final String JANINE = "janine";
+
     private final User user = User.from(DAVE);
 
     @Test
@@ -28,7 +29,7 @@ public class UserTest {
 
         Stream<Post> postStream = userWithOneMessage.timeline.posts().stream();
 
-        assertThat(postStream.anyMatch((post) -> post.user.name.equals(DAVE) && post.message.equals(MSG)), is(true));
+        assertThat(postStream.anyMatch(post -> post.user.name.equals(DAVE) && post.message.equals(MSG)), is(true));
     }
 
     @Test
@@ -54,8 +55,8 @@ public class UserTest {
         follower.wall.forEach(wallPosts::add);
         assertThat(wallPosts.size(), is(2));
         Stream<Post> postStream = wallPosts.stream();
-        assertThat(postStream.anyMatch((post) -> post.user.name.equals(JANINE) && post.message.equals(MSG)), is(true));
+        assertThat(postStream.anyMatch(post -> post.user.name.equals(JANINE) && post.message.equals(MSG)), is(true));
         postStream = wallPosts.stream();
-        assertThat(postStream.anyMatch((post) -> post.user.name.equals(DAVE) && post.message.equals(MSG)), is(true));
+        assertThat(postStream.anyMatch(post -> post.user.name.equals(DAVE) && post.message.equals(MSG)), is(true));
     }
 }

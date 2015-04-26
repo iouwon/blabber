@@ -12,9 +12,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class UserCommandOrchestratorTest {
 
-    public static final String MSG = "what lovely weather we're having... not!";
-    public static final String CAROL = "carol";
-    public static final String BRIAN = "brian";
+    private static final String MSG = "what lovely weather we're having... not!";
+    private static final String CAROL = "carol";
+    private static final String BRIAN = "brian";
 
     private final UserCommandOrchestrator userCommandOrchestrator = UserCommandOrchestrator.newObj();
 
@@ -29,7 +29,7 @@ public class UserCommandOrchestratorTest {
         Stream<Post> postStream = carolsPosts.stream();
 
         assertThat(carolsPosts.size(), equalTo(1));
-        assertThat(postStream.anyMatch((post) -> post.user.name.equals(CAROL) && post.message.equals(MSG)), is(true));
+        assertThat(postStream.anyMatch(post -> post.user.name.equals(CAROL) && post.message.equals(MSG)), is(true));
     }
 
     @Test
@@ -45,7 +45,7 @@ public class UserCommandOrchestratorTest {
         Stream<Post> postStream = carolsPosts.stream();
         assertThat(carolsPosts.size(), equalTo(2));
 
-        Stream<Post> allCarolsMatchingPosts = postStream.filter((post) -> post.user.name.equals(CAROL) && post.message.equals(MSG));
+        Stream<Post> allCarolsMatchingPosts = postStream.filter(post -> post.user.name.equals(CAROL) && post.message.equals(MSG));
         assertThat(allCarolsMatchingPosts.count(), is(2l));
     }
 
@@ -65,11 +65,11 @@ public class UserCommandOrchestratorTest {
         assertThat(carolsWallPosts.size(), equalTo(2));
 
         Stream<Post> postStream = carolsWallPosts.stream();
-        Stream<Post> carolsMatchingPosts = postStream.filter((post) -> post.user.name.equals(CAROL) && post.message.equals(msgFromCarolToBrian));
+        Stream<Post> carolsMatchingPosts = postStream.filter(post -> post.user.name.equals(CAROL) && post.message.equals(msgFromCarolToBrian));
         assertThat(carolsMatchingPosts.count(), equalTo(1l));
 
         postStream = carolsWallPosts.stream();
-        Stream<Post> briansMatchingPosts = postStream.filter((post) -> post.user.name.equals(BRIAN) && post.message.equals(msgFromBrianToCarol));
+        Stream<Post> briansMatchingPosts = postStream.filter(post -> post.user.name.equals(BRIAN) && post.message.equals(msgFromBrianToCarol));
         assertThat(briansMatchingPosts.count(), equalTo(1l));
 
         Post firstPost = carolsWallPosts.pop();

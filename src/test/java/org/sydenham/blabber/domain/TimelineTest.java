@@ -9,11 +9,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class TimelineTest {
 
-    public static final String USERNAME_1 = "user1";
-    public static final String USERNAME_2 = "user2";
-    public static final String MESSAGE_1 = "message1";
-    public static final String MESSAGE_2 = "message2";
-    public static final LocalDateTime posted = LocalDateTime.MIN;
+    private static final String USERNAME_1 = "user1";
+    private static final String USERNAME_2 = "user2";
+    private static final String MESSAGE_1 = "message1";
+    private static final String MESSAGE_2 = "message2";
+    private static final LocalDateTime posted = LocalDateTime.MIN;
+
     private final Timeline timeline = new Timeline();
 
     @Test
