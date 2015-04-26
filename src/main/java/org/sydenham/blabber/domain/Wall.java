@@ -1,10 +1,12 @@
 package org.sydenham.blabber.domain;
 
+import org.sydenham.blabber.exception.ApplicationException;
+
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-public class Wall {
+public class Wall implements Cloneable {
 
     private final HashSet<User> following;
 
@@ -12,24 +14,35 @@ public class Wall {
         following = new HashSet<>();
     }
 
+    @SuppressWarnings("unchecked")
     public Wall(HashSet<User> following) {
         this.following = (HashSet<User>) following.clone();
     }
 
+    @SuppressWarnings("unchecked")
     public Wall follow(User user) {
         HashSet<User> newInterests = (HashSet<User>) following.clone();
         newInterests.add(user);
         return new Wall(newInterests);
     }
 
-    public Wall capturePostsOf(HashSet<User> users) {
-        HashSet<User> usersLatestPosts = (HashSet<User>) users.clone();
-        usersLatestPosts.retainAll(following);
-        return new Wall(usersLatestPosts);
+    @SuppressWarnings("unchecked")
+    public Wall harvest(HashSet<User> users) {
+        HashSet<User> usersAndTheirLatestPosts = (HashSet<User>) users.clone();
+        usersAndTheirLatestPosts.retainAll(following);
+        return new Wall(usersAndTheirLatestPosts);
     }
 
     public void forEach(Consumer<Post> action) {
         amalgamatedPosts().forEach(action);
+    }
+
+    public Object clone() {
+        try {
+            return super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new ApplicationException(e);
+        }
     }
 
     private List<Post> amalgamatedPosts() {

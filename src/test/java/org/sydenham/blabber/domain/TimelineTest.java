@@ -1,6 +1,5 @@
 package org.sydenham.blabber.domain;
 
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.time.LocalDateTime;
@@ -10,18 +9,17 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class TimelineTest {
 
-    private Timeline timeline;
-    private LocalDateTime posted = LocalDateTime.MIN;
-
-    @BeforeMethod
-    public void setUp() {
-        timeline = new Timeline();
-    }
+    public static final String USERNAME_1 = "user1";
+    public static final String USERNAME_2 = "user2";
+    public static final String MESSAGE_1 = "message1";
+    public static final String MESSAGE_2 = "message2";
+    public static final LocalDateTime posted = LocalDateTime.MIN;
+    private final Timeline timeline = new Timeline();
 
     @Test
     public void addingPostAppendsToANewTimeline() {
-        Post newPost = new Post(new User("user"), "message", posted);
-        Post expectedPost = new Post(new User("user"), "message", posted);
+        Post newPost = new Post(User.from(USERNAME_1), MESSAGE_1, posted);
+        Post expectedPost = new Post(User.from(USERNAME_1), MESSAGE_1, posted);
 
         Timeline newTimeline = timeline.append(newPost);
 
@@ -32,12 +30,10 @@ public class TimelineTest {
 
     @Test
     public void addingMultiplePostsAppendsAllToANewTimeline() {
-        String username1 = "user1";
-        String username2 = "user2";
-        Post newPost1 = new Post(new User(username1), "message1", posted);
-        Post newPost2 = new Post(new User(username2), "message2", posted);
-        Post expectedPost1 = new Post(new User(username1), "message1", posted);
-        Post expectedPost2 = new Post(new User(username2), "message2", posted);
+        Post newPost1 = new Post(User.from(USERNAME_1), MESSAGE_1, posted);
+        Post newPost2 = new Post(User.from(USERNAME_2), MESSAGE_2, posted);
+        Post expectedPost1 = new Post(User.from(USERNAME_1), MESSAGE_1, posted);
+        Post expectedPost2 = new Post(User.from(USERNAME_2), MESSAGE_2, posted);
 
         Timeline newTimeline = timeline.append(newPost1).append(newPost2);
 
@@ -49,10 +45,8 @@ public class TimelineTest {
 
     @Test
     public void timelinesAreEqual() {
-        String username1 = "user1";
-        String username2 = "user2";
-        Post newPost1 = new Post(new User(username1), "message1", posted);
-        Post newPost2 = new Post(new User(username2), "message2", posted);
+        Post newPost1 = new Post(User.from(USERNAME_1), MESSAGE_1, posted);
+        Post newPost2 = new Post(User.from(USERNAME_2), MESSAGE_2, posted);
 
         Timeline thisTimeline = timeline.append(newPost1).append(newPost2);
         Timeline thatTimeline = new Timeline().append(newPost1).append(newPost2);
@@ -62,10 +56,8 @@ public class TimelineTest {
 
     @Test
     public void timelinesAreNotEqual() {
-        String username1 = "user1";
-        String username2 = "user2";
-        Post newPost1 = new Post(new User(username1), "message1", posted);
-        Post newPost2 = new Post(new User(username2), "message2", posted);
+        Post newPost1 = new Post(User.from(USERNAME_1), MESSAGE_1, posted);
+        Post newPost2 = new Post(User.from(USERNAME_2), MESSAGE_2, posted);
 
         Timeline thisTimeline = timeline.append(newPost1);
         Timeline thatTimeline = new Timeline().append(newPost2);

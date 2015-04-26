@@ -19,16 +19,16 @@ public class WallTest {
     public static final String MSG3 = "msg3";
     public static final String MSG4 = "msg4";
     public static final String MSG5 = "msg5";
-    private Wall wall = new Wall();
+    private final Wall wall = new Wall();
 
     @Test
     public void followingUserAndCapturingLatestPostsMergesTheirTimelineOntoTheWallInPostTimeOrder() {
-        User user = new User(USERNAME1).postMessage(MSG1).postMessage(MSG2);
+        User user = User.from(USERNAME1).postMessage(MSG1).postMessage(MSG2);
 
         HashSet<User> users = new HashSet<>();
         users.add(user);
 
-        Wall newWall = wall.follow(user).capturePostsOf(users);
+        Wall newWall = wall.follow(user).harvest(users);
 
         LinkedList<Post> postsOnWall = new LinkedList<>();
         newWall.forEach(postsOnWall::addLast);
@@ -45,9 +45,9 @@ public class WallTest {
 
     @Test
     public void followingMultipleUsersAndCapturingLatestPostsMergesTheirTimelinesOntoTheWallInPostTimeOrder() throws InterruptedException {
-        User user1 = new User(USERNAME1).postMessage(MSG1);
+        User user1 = User.from(USERNAME1).postMessage(MSG1);
         contriveTimestampDifference();
-        User user2 = new User(USERNAME2).postMessage(MSG2).postMessage(MSG3);
+        User user2 = User.from(USERNAME2).postMessage(MSG2).postMessage(MSG3);
         contriveTimestampDifference();
         user1 = user1.postMessage(MSG4);
 
@@ -55,7 +55,7 @@ public class WallTest {
         users.add(user1);
         users.add(user2);
 
-        Wall newWall = wall.follow(user1).follow(user2).capturePostsOf(users);
+        Wall newWall = wall.follow(user1).follow(user2).harvest(users);
 
         LinkedList<Post> postsOnWall = new LinkedList<>();
         newWall.forEach(postsOnWall::addLast);
@@ -86,19 +86,19 @@ public class WallTest {
 
     @Test
     public void followingASubsetOfTheUsersAndCapturingLatestPostsMergesOnlyThoseFollowed() throws InterruptedException {
-        User user1 = new User(USERNAME1).postMessage(MSG1);
+        User user1 = User.from(USERNAME1).postMessage(MSG1);
         contriveTimestampDifference();
-        User user2 = new User(USERNAME2).postMessage(MSG2).postMessage(MSG3);
+        User user2 = User.from(USERNAME2).postMessage(MSG2).postMessage(MSG3);
         contriveTimestampDifference();
         user1 = user1.postMessage(MSG4);
-        User user3 = new User(USERNAME3).postMessage(MSG5);
+        User user3 = User.from(USERNAME3).postMessage(MSG5);
 
         HashSet<User> users = new HashSet<>();
         users.add(user1);
         users.add(user2);
         users.add(user3);
 
-        Wall newWall = wall.follow(user1).follow(user2).capturePostsOf(users);
+        Wall newWall = wall.follow(user1).follow(user2).harvest(users);
 
         LinkedList<Post> postsOnWall = new LinkedList<>();
         newWall.forEach(postsOnWall::addLast);
