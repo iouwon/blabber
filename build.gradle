@@ -8,6 +8,7 @@ repositories {
 
 dependencies {
     testCompile group: 'org.testng', name: 'testng', version: '6.8.21'
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '1.10.19'
     testCompile group: 'org.hamcrest', name: 'hamcrest-core', version: '1.3'
 }
 
