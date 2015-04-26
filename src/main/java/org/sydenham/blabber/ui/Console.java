@@ -80,10 +80,13 @@ public class Console {
     private String timeSinceText(LocalDateTime timestamp) {
         String durationFormat = Duration.between(LocalDateTime.from(clock.instant().atZone(systemDefault())), timestamp).toString();
         durationFormat = durationFormat.replace("PT-", "");
+        durationFormat = durationFormat.replace("-", " ");
         durationFormat = durationFormat.replaceFirst("(\\d+)S", "$1 seconds");
         durationFormat = durationFormat.replaceFirst("\\b1 seconds", "1 second");
         durationFormat = durationFormat.replaceFirst("(\\d+)M", "$1 minutes");
         durationFormat = durationFormat.replaceFirst("\\b1 minutes", "1 minute");
+        durationFormat = durationFormat.replaceFirst("(\\d+)H", "$1 hours");
+        durationFormat = durationFormat.replaceFirst("\\b1 hours", "1 hour");
 
         return durationFormat;
     }

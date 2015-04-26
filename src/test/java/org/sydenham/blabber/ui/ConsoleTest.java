@@ -11,10 +11,12 @@ import org.testng.annotations.Test;
 
 import java.io.*;
 import java.time.*;
+import java.util.List;
 import java.util.function.Consumer;
 
 import static java.lang.String.format;
 import static java.time.ZoneId.systemDefault;
+import static java.util.Arrays.asList;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -27,10 +29,13 @@ public class ConsoleTest {
     private static final String READ_MESSAGE_OUTPUT_TEMPLATE = "%s (%s ago)";
     private static final String QUIT_COMMAND = "";
     private static final Class<Consumer<Post>> CONSUMER_CLASS = null;
-    private static final LocalDateTime TWO_MINUTES_AGO_TIMESTAMP = LocalDateTime.of(2000, 1, 1, 0, 0, 0);
-    private static final LocalDateTime ONE_MINUTE_AGO_TIMESTAMP = LocalDateTime.of(2000, 1, 1, 0, 1, 0);
-    private static final LocalDateTime TWO_SECONDS_AGO_TIMESTAMP = LocalDateTime.of(2000, 1, 1, 0, 1, 58);
-    private static final LocalDateTime ONE_SECOND_AGO_TIMESTAMP = LocalDateTime.of(2000, 1, 1, 0, 1, 59);
+    private static final LocalDateTime TWO_HOURS_AGO_TIMESTAMP = LocalDateTime.of(2000, 1, 1, 0, 0, 0);
+    private static final LocalDateTime ONE_HOUR_AGO_TIMESTAMP = LocalDateTime.of(2000, 1, 1, 1, 0, 0);
+    private static final LocalDateTime TWO_MINUTES_AGO_TIMESTAMP = LocalDateTime.of(2000, 1, 1, 1, 58, 0);
+    private static final LocalDateTime ONE_MINUTE_AGO_TIMESTAMP = LocalDateTime.of(2000, 1, 1, 1, 59, 0);
+    private static final LocalDateTime TWO_SECONDS_AGO_TIMESTAMP = LocalDateTime.of(2000, 1, 1, 1, 59, 58);
+    private static final LocalDateTime ONE_SECOND_AGO_TIMESTAMP = LocalDateTime.of(2000, 1, 1, 1, 59, 59);
+    private static final LocalDateTime ONE_HOUR_TWO_MINUTES_ONE_SECOND_AGO_TIMESTAMP = LocalDateTime.of(2000, 1, 1, 0, 57, 59);
 
     private Console console;
     @Mock
@@ -95,18 +100,23 @@ public class ConsoleTest {
     public void readCommandPrintsOutTimesCorrectly() throws IOException {
         String readMessageCommand = USERNAME;
         when(userInputMock.readLine()).thenReturn(readMessageCommand).thenReturn(QUIT_COMMAND);
-        simulatePostedMessagesAt(ONE_SECOND_AGO_TIMESTAMP, TWO_SECONDS_AGO_TIMESTAMP, ONE_MINUTE_AGO_TIMESTAMP, TWO_MINUTES_AGO_TIMESTAMP);
-        when(clockMock.instant()).thenReturn(clockInstant(ONE_MINUTE_AGO_TIMESTAMP, 60l));
+        simulatePostedMessagesAt(
+                ONE_SECOND_AGO_TIMESTAMP,
+                TWO_SECONDS_AGO_TIMESTAMP,
+                ONE_MINUTE_AGO_TIMESTAMP,
+                TWO_MINUTES_AGO_TIMESTAMP,
+                ONE_HOUR_AGO_TIMESTAMP,
+                TWO_HOURS_AGO_TIMESTAMP,
+                ONE_HOUR_TWO_MINUTES_ONE_SECOND_AGO_TIMESTAMP);
+        when(clockMock.instant()).thenReturn(clockInstant(TWO_HOURS_AGO_TIMESTAMP, 7200l));
 
         console.run();
 
         InOrder inOrder = inOrder(userOutputMock);
 
         verify(userCommandOrchestratorMock).forEachTimelinePostOf(eq(USERNAME), any(CONSUMER_CLASS));
-        inOrder.verify(userOutputMock).println(format(READ_MESSAGE_OUTPUT_TEMPLATE, MSG, "1 second"));
-        inOrder.verify(userOutputMock).println(format(READ_MESSAGE_OUTPUT_TEMPLATE, MSG, "2 seconds"));
-        inOrder.verify(userOutputMock).println(format(READ_MESSAGE_OUTPUT_TEMPLATE, MSG, "1 minute"));
-        inOrder.verify(userOutputMock).println(format(READ_MESSAGE_OUTPUT_TEMPLATE, MSG, "2 minutes"));
+        List<String> durations = asList("1 second", "2 seconds", "1 minute", "2 minutes", "1 hour", "2 hours", "1 hour 2 minutes 1 second");
+        durations.forEach(duration -> inOrder.verify(userOutputMock).println(format(READ_MESSAGE_OUTPUT_TEMPLATE, MSG, duration)));
     }
 
     private Instant clockInstant(LocalDateTime timestamp, long secondsAgo) {
