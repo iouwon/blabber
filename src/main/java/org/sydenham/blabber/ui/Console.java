@@ -42,8 +42,7 @@ public class Console {
 
     private void runCommandLoop(Optional<UserCommandOrchestrator> maybeUserCommandOrchestrator) throws IOException {
         while (maybeUserCommandOrchestrator.isPresent()) {
-            String userInput = in.readLine();
-            Matcher commandMatcher = COMMAND_PATTERN.matcher(userInput);
+            Matcher commandMatcher = COMMAND_PATTERN.matcher(in.readLine());
 
             if (commandMatcher.matches()) {
                 CommandType commandType = CommandType.mapFrom(commandMatcher.group(2));
@@ -57,32 +56,32 @@ public class Console {
     private Optional<UserCommandOrchestrator> handleCommand(UserCommandOrchestrator userCommandOrchestrator, CommandType commandType, Matcher matcher) {
         switch (commandType) {
             case POST:
-                return of(doPostMessage(userCommandOrchestrator, matcher.group(1), matcher.group(3)));
+                return of(postMessage(userCommandOrchestrator, matcher.group(1), matcher.group(3)));
             case READ_TIMELINE:
-                return of(doReadTimelineMatcher(userCommandOrchestrator, matcher.group(1)));
+                return of(readTimelineMatcher(userCommandOrchestrator, matcher.group(1)));
             case FOLLOW:
-                return of(doFollow(userCommandOrchestrator, matcher.group(1), matcher.group(3)));
+                return of(follow(userCommandOrchestrator, matcher.group(1), matcher.group(3)));
             case READ_WALL:
-                return of(doReadWall(userCommandOrchestrator, matcher.group(1)));
+                return of(readWall(userCommandOrchestrator, matcher.group(1)));
             default:
                 return empty();
         }
     }
 
-    private UserCommandOrchestrator doPostMessage(UserCommandOrchestrator userCommandOrchestrator, String username, String msg) {
+    private UserCommandOrchestrator postMessage(UserCommandOrchestrator userCommandOrchestrator, String username, String msg) {
         return userCommandOrchestrator.postMessage(username, msg);
     }
 
-    private UserCommandOrchestrator doReadTimelineMatcher(UserCommandOrchestrator userCommandOrchestrator, String username) {
+    private UserCommandOrchestrator readTimelineMatcher(UserCommandOrchestrator userCommandOrchestrator, String username) {
         userCommandOrchestrator.forEachTimelinePostOf(username, post -> out.println(printTimelinePost(post)));
         return userCommandOrchestrator;
     }
 
-    private UserCommandOrchestrator doFollow(UserCommandOrchestrator userCommandOrchestrator, String followerName, String followedName) {
+    private UserCommandOrchestrator follow(UserCommandOrchestrator userCommandOrchestrator, String followerName, String followedName) {
         return userCommandOrchestrator.userAFollowsUserB(followerName, followedName);
     }
 
-    private UserCommandOrchestrator doReadWall(UserCommandOrchestrator userCommandOrchestrator, String username) {
+    private UserCommandOrchestrator readWall(UserCommandOrchestrator userCommandOrchestrator, String username) {
         userCommandOrchestrator.forEachWallPostOf(username, post -> out.println(printWallPost(post)));
         return userCommandOrchestrator;
     }
@@ -92,7 +91,7 @@ public class Console {
     }
 
     private String printWallPost(Post post) {
-        String timelinePost = format(TIMELINE_POST_OUTPUT_TEMPLATE, post.message, timeSinceText(post.timestamp));
+        String timelinePost = printTimelinePost(post);
         return format(WALL_POST_OUTPUT_TEMPLATE, post.user.name, timelinePost);
     }
 
@@ -113,11 +112,11 @@ public class Console {
     private enum CommandType {
         POST, READ_TIMELINE, FOLLOW, READ_WALL, QUIT;
 
-        public static final String POST_TEXT = "->";
-        public static final String FOLLOW_TEXT = "follows";
-        public static final String READ_WALL_TEXT = "wall";
+        private static final String POST_TEXT = "->";
+        private static final String FOLLOW_TEXT = "follows";
+        private static final String READ_WALL_TEXT = "wall";
 
-        public static CommandType mapFrom(String commandText) {
+        private static CommandType mapFrom(String commandText) {
             if (commandText != null) {
                 switch (commandText.toLowerCase()) {
                     case POST_TEXT:

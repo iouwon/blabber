@@ -48,10 +48,12 @@ public class Wall implements Cloneable {
     private List<Post> amalgamatedPosts() {
         LinkedList<Post> amalgamatedPosts = new LinkedList<>();
         LinkedList<LinkedList<Post>> timelines = new LinkedList<>();
+
         following.forEach(user -> timelines.add(user.timeline.posts()));
+
         while (timelines.size() > 0) {
-            Stream<LinkedList<Post>> timelinesStream = timelines.stream();
-            LinkedList<Post> timelineWithEarliestPost = timelineWithEarliestPostIn(timelinesStream);
+            LinkedList<Post> timelineWithEarliestPost = timelineWithEarliestPostIn(timelines.stream());
+
             if (timelineWithEarliestPost.size() > 0) {
                 amalgamatedPosts.addLast(timelineWithEarliestPost.pop());
             } else {
@@ -67,7 +69,10 @@ public class Wall implements Cloneable {
 
     private LinkedList<Post> timelineWithEarliestPostBetween(LinkedList<Post> timeline1, LinkedList<Post> timeline2) {
         if (timeline1.size() > 0 && timeline2.size() > 0) {
-            if (timeline1.peek().wasPostedBefore(timeline2.peek())) {
+            Post timeline1FirstPost = timeline1.peek();
+            Post timeline2FirstPost = timeline2.peek();
+
+            if (timeline1FirstPost.wasPostedBefore(timeline2FirstPost)) {
                 return timeline1;
             } else {
                 return timeline2;

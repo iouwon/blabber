@@ -42,7 +42,9 @@ public class UserCommandOrchestrator {
     public UserCommandOrchestrator userAFollowsUserB(String followerName, String followedName) {
         User follower = User.from(followerName);
         User followed = User.from(followedName);
+
         HashMap<User, User> newUsers = (HashMap<User, User>) users.clone();
+
         follower = newUsers.getOrDefault(follower, follower);
         followed = newUsers.getOrDefault(followed, followed);
 
