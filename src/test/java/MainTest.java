@@ -7,7 +7,7 @@ import static org.mockito.Mockito.verify;
 
 public class MainTest {
 
-    private Console consoleMock = mock(Console.class);
+    private final Console consoleMock = mock(Console.class);
 
     @Test
     public void retrievesConsoleUiAndCallsRun() {

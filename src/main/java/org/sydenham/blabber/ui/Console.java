@@ -23,7 +23,7 @@ public class Console {
     private final BufferedReader in;
     private final PrintStream out;
     private final UserCommandOrchestrator userCommandOrchestrator;
-    private Clock clock;
+    private final Clock clock;
 
     public Console(BufferedReader in, PrintStream out, UserCommandOrchestrator userCommandOrchestrator, Clock clock) {
         this.in = in;

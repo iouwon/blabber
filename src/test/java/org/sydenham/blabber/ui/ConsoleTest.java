@@ -18,7 +18,6 @@ import java.util.function.Consumer;
 import static java.lang.String.format;
 import static java.time.ZoneId.systemDefault;
 import static java.util.Arrays.asList;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -139,7 +138,7 @@ public class ConsoleTest {
     public void whenAUserRequestsWallTheRequestIsForwardedOnToTheServiceLayerAndTheResultsArePrinted() throws IOException {
         String readWallCommand = format(READ_WALL_COMMAND_TEMPLATE, USERNAME);
         when(userInputMock.readLine()).thenReturn(readWallCommand, readWallCommand).thenReturn(QUIT_COMMAND);
-        simulateWallPostedMessagesAt(ONE_SECOND_AGO_TIMESTAMP);
+        simulateWallPostedMessages();
         when(clockMock.instant()).thenReturn(clockInstant(ONE_SECOND_AGO_TIMESTAMP, 1l));
 
         console.run();
@@ -156,12 +155,12 @@ public class ConsoleTest {
         postsWithTimestampsResponse(timestamps).when(userCommandOrchestratorMock).forEachTimelinePostOf(eq(USERNAME), any(CONSUMER_CLASS));
     }
 
-    private void simulateWallPostedMessagesAt(LocalDateTime... timestamps) {
-        postsWithTimestampsResponse(timestamps).when(userCommandOrchestratorMock).forEachWallPostOf(eq(USERNAME), any(CONSUMER_CLASS));
+    private void simulateWallPostedMessages() {
+        postsWithTimestampsResponse(ONE_SECOND_AGO_TIMESTAMP).when(userCommandOrchestratorMock).forEachWallPostOf(eq(USERNAME), any(CONSUMER_CLASS));
     }
 
     @SuppressWarnings("unchecked")
-    private Stubber postsWithTimestampsResponse(LocalDateTime[] timestamps) {
+    private Stubber postsWithTimestampsResponse(LocalDateTime... timestamps) {
         return doAnswer(invocation -> {
             Consumer<Post> consumer = (Consumer<Post>) invocation.getArguments()[1];
             for (LocalDateTime timestamp : timestamps) {

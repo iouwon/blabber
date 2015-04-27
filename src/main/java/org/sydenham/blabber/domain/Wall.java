@@ -15,7 +15,7 @@ public class Wall implements Cloneable {
     }
 
     @SuppressWarnings("unchecked")
-    public Wall(HashSet<User> following) {
+    private Wall(HashSet<User> following) {
         this.following = (HashSet<User>) following.clone();
     }
 

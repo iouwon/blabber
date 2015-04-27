@@ -14,7 +14,7 @@ public class Timeline implements Cloneable {
         posts = new LinkedList<>();
     }
 
-    public Timeline(LinkedList<Post> posts) {
+    private Timeline(LinkedList<Post> posts) {
         this.posts = (LinkedList<Post>) posts.clone();
     }
 

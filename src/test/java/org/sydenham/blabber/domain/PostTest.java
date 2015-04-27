@@ -25,7 +25,7 @@ public class PostTest {
     @Test
     public void wasPostedBeforeIsTrueIfPostedBeforeAndFalseIfPostedAfter() throws InterruptedException {
         Post post1 = Post.from(User.from(NAME), MSG);
-        contriveTimestampeDifference();
+        contriveTimestampDifference();
         Post post2 = Post.from(User.from(NAME), MSG);
 
         assertThat(post1.wasPostedBefore(post2), is(true));
@@ -42,7 +42,7 @@ public class PostTest {
         assertThat(post2.wasPostedBefore(post1), is(false));
     }
 
-    private void contriveTimestampeDifference() throws InterruptedException {
+    private void contriveTimestampDifference() throws InterruptedException {
         Thread.sleep(1);
     }
 }
