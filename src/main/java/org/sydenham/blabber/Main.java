@@ -11,11 +11,11 @@ public class Main {
 
     private static Console console = new Console(new BufferedReader(new InputStreamReader(System.in)), System.out, UserCommandOrchestrator.newObj(), Clock.systemDefaultZone());
 
-    public static void main(String[] args) {
-        console.run();
-    }
-
     public static void setConsole(Console console) {
         Main.console = console;
+    }
+
+    public static void main(String[] args) {
+        console.run();
     }
 }

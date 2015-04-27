@@ -26,7 +26,7 @@ public class ConsoleTest {
 
     private static final String USERNAME = "username";
     private static final String FOLLOWED_USERNAME = "followed";
-    private static final String MSG = "msg";
+    private static final String MSG = "!msg! with! space! and! punc!";
     private static final String POST_MESSAGE_COMMAND_TEMPLATE = "%s -> %s";
     private static final String READ_TIMELINE_OUTPUT_TEMPLATE = "%s (%s ago)";
     private static final String FOLLOW_USER_COMMAND_TEMPLATE = "%s follows %s";
@@ -78,26 +78,26 @@ public class ConsoleTest {
     @Test
     public void whenAUserPostsAMessageTheRequestIsForwardedOnToTheServiceLayer() throws IOException {
         String postMessageCommand = format(POST_MESSAGE_COMMAND_TEMPLATE, USERNAME, MSG);
-        when(userInputMock.readLine()).thenReturn(postMessageCommand).thenReturn(QUIT_COMMAND);
+        when(userInputMock.readLine()).thenReturn(postMessageCommand, postMessageCommand).thenReturn(QUIT_COMMAND);
         when(userCommandOrchestratorMock.postMessage(USERNAME, MSG)).thenReturn(userCommandOrchestratorMock);
 
         console.run();
 
-        verify(userCommandOrchestratorMock).postMessage(USERNAME, MSG);
+        verify(userCommandOrchestratorMock, times(2)).postMessage(USERNAME, MSG);
         verifyZeroInteractions(userOutputMock);
     }
 
     @Test
     public void whenAUserRequestsATimelineReadTheRequestIsForwardedOnToTheServiceLayerAndTheResultsArePrinted() throws IOException {
         String readMessageCommand = USERNAME;
-        when(userInputMock.readLine()).thenReturn(readMessageCommand).thenReturn(QUIT_COMMAND);
+        when(userInputMock.readLine()).thenReturn(readMessageCommand, readMessageCommand).thenReturn(QUIT_COMMAND);
         simulateTimelinePostedMessagesAt(ONE_SECOND_AGO_TIMESTAMP);
         when(clockMock.instant()).thenReturn(clockInstant(ONE_SECOND_AGO_TIMESTAMP, 1l));
 
         console.run();
 
-        verify(userCommandOrchestratorMock).forEachTimelinePostOf(eq(USERNAME), any(CONSUMER_CLASS));
-        verify(userOutputMock).println(format(READ_TIMELINE_OUTPUT_TEMPLATE, MSG, "1 second"));
+        verify(userCommandOrchestratorMock, times(2)).forEachTimelinePostOf(eq(USERNAME), any(CONSUMER_CLASS));
+        verify(userOutputMock, times(2)).println(format(READ_TIMELINE_OUTPUT_TEMPLATE, MSG, "1 second"));
     }
 
     @Test
@@ -126,25 +126,26 @@ public class ConsoleTest {
     @Test
     public void whenAUserRequestsToFollowAnotherUserTheRequestIsForwardedOnToTheServiceLayer() throws IOException {
         String followUserCommand = format(FOLLOW_USER_COMMAND_TEMPLATE, USERNAME, FOLLOWED_USERNAME);
-        when(userInputMock.readLine()).thenReturn(followUserCommand).thenReturn(QUIT_COMMAND);
+        when(userInputMock.readLine()).thenReturn(followUserCommand, followUserCommand).thenReturn(QUIT_COMMAND);
+        when(userCommandOrchestratorMock.userAFollowsUserB(USERNAME, FOLLOWED_USERNAME)).thenReturn(userCommandOrchestratorMock);
 
         console.run();
 
-        verify(userCommandOrchestratorMock).userAFollowsUserB(USERNAME, FOLLOWED_USERNAME);
+        verify(userCommandOrchestratorMock, times(2)).userAFollowsUserB(USERNAME, FOLLOWED_USERNAME);
         verifyNoMoreInteractions(userOutputMock);
     }
 
     @Test
     public void whenAUserRequestsWallTheRequestIsForwardedOnToTheServiceLayerAndTheResultsArePrinted() throws IOException {
         String readWallCommand = format(READ_WALL_COMMAND_TEMPLATE, USERNAME);
-        when(userInputMock.readLine()).thenReturn(readWallCommand).thenReturn(QUIT_COMMAND);
+        when(userInputMock.readLine()).thenReturn(readWallCommand, readWallCommand).thenReturn(QUIT_COMMAND);
         simulateWallPostedMessagesAt(ONE_SECOND_AGO_TIMESTAMP);
         when(clockMock.instant()).thenReturn(clockInstant(ONE_SECOND_AGO_TIMESTAMP, 1l));
 
         console.run();
 
-        verify(userCommandOrchestratorMock).forEachWallPostOf(eq(USERNAME), any(CONSUMER_CLASS));
-        verify(userOutputMock).println(format("%s - " + READ_TIMELINE_OUTPUT_TEMPLATE, USERNAME, MSG, "1 second"));
+        verify(userCommandOrchestratorMock, times(2)).forEachWallPostOf(eq(USERNAME), any(CONSUMER_CLASS));
+        verify(userOutputMock, times(2)).println(format("%s - " + READ_TIMELINE_OUTPUT_TEMPLATE, USERNAME, MSG, "1 second"));
     }
 
     private Instant clockInstant(LocalDateTime timestamp, long secondsAgo) {

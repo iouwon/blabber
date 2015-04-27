@@ -16,7 +16,7 @@ import static java.util.Optional.empty;
 import static java.util.Optional.of;
 
 public class Console {
-    private static final Pattern COMMAND_PATTERN = Pattern.compile("(?i)(\\w+)(?:\\s+(\\S+)(?:\\s+(\\w+))?)?");
+    private static final Pattern COMMAND_PATTERN = Pattern.compile("(?i)(\\w+)(?:\\s+(\\S+)(?:\\s+(.+))?)?");
     private static final String TIMELINE_POST_OUTPUT_TEMPLATE = "%s (%s ago)";
     private static final String WALL_POST_OUTPUT_TEMPLATE = "%s - %s";
 
@@ -59,11 +59,11 @@ public class Console {
             case POST:
                 return of(doPostMessage(userCommandOrchestrator, matcher.group(1), matcher.group(3)));
             case READ_TIMELINE:
-                return of(doReadTimelineMatcher(matcher.group(1)));
+                return of(doReadTimelineMatcher(userCommandOrchestrator, matcher.group(1)));
             case FOLLOW:
-                doFollow(userCommandOrchestrator, matcher.group(1), matcher.group(3));
+                return of(doFollow(userCommandOrchestrator, matcher.group(1), matcher.group(3)));
             case READ_WALL:
-                doReadWall(matcher.group(1));
+                return of(doReadWall(userCommandOrchestrator, matcher.group(1)));
             default:
                 return empty();
         }
@@ -73,7 +73,7 @@ public class Console {
         return userCommandOrchestrator.postMessage(username, msg);
     }
 
-    private UserCommandOrchestrator doReadTimelineMatcher(String username) {
+    private UserCommandOrchestrator doReadTimelineMatcher(UserCommandOrchestrator userCommandOrchestrator, String username) {
         userCommandOrchestrator.forEachTimelinePostOf(username, post -> out.println(printTimelinePost(post)));
         return userCommandOrchestrator;
     }
@@ -82,7 +82,7 @@ public class Console {
         return userCommandOrchestrator.userAFollowsUserB(followerName, followedName);
     }
 
-    private UserCommandOrchestrator doReadWall(String username) {
+    private UserCommandOrchestrator doReadWall(UserCommandOrchestrator userCommandOrchestrator, String username) {
         userCommandOrchestrator.forEachWallPostOf(username, post -> out.println(printWallPost(post)));
         return userCommandOrchestrator;
     }
